@@ -15,6 +15,8 @@ pub struct List<T> {
 
 impl<T> List<T> {
     pub fn new(capacity: usize) -> Self {
+        // two extra nodes for head and tail
+        // head: capacity, tail: capacity + 1
         let mut list = List {
             head: capacity,
             tail: capacity + 1,
