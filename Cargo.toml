@@ -4,8 +4,22 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 authors = ["MizukiCry <YuukaC@outlook.com>"]
+description = "A simple & fast re-implementation of LevelDB in Rust."
 
 [dependencies]
 rand = "0.8.5"
 integer-encoding = "4.0.0"
 crc = "3.2.1"
+snap = "1.1.1"
+
+errno = { version = "0.3.9", optional = true }
+fs2 = { version = "0.4.3", optional = true }
+
+tokio = { version = "1.38.0", optional = true, features = ["rt", "sync"] }
+
+[features]
+default = ["fs"]
+fs = ["errno", "fs2"]
+async = ["tokio"]
+
+[dev-dependencies]
