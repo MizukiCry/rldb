@@ -58,6 +58,24 @@ pub trait DbIterator {
     }
 }
 
+pub struct DbIteratorWrapper<'a, It: 'a> {
+    inner: &'a mut It,
+}
+
+impl<'a, It: DbIterator> DbIteratorWrapper<'a, It> {
+    pub fn new(inner: &'a mut It) -> Self {
+        Self { inner }
+    }
+}
+
+impl<'a, It: DbIterator> Iterator for DbIteratorWrapper<'a, It> {
+    type Item = (Vec<u8>, Vec<u8>);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.inner.next()
+    }
+}
+
 // impl DbIterator for Box<dyn DbIterator> {
 //     fn advance(&mut self) -> bool {
 //         self.as_mut().advance()

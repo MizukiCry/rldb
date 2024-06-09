@@ -272,7 +272,13 @@ mod tests {
     use super::*;
 
     mod tests_leveldb_rs {
-        use crate::coredef::cmp::{DefaultCmp, MemtableKeyCmp};
+        use crate::{
+            coredef::{
+                cmp::{DefaultCmp, MemtableKeyCmp},
+                types::DbIteratorWrapper,
+            },
+            utils::test_iterator_properties,
+        };
 
         use super::*;
 
@@ -386,18 +392,18 @@ mod tests {
             assert!(!it.valid());
         }
 
-        // #[test]
-        // fn test_skiplist_iterator_0() {
-        //     let skm = SkipList::new(Rc::new(DefaultCmp));
-        //     let mut i = 0;
+        #[test]
+        fn test_skiplist_iterator_0() {
+            let skm = SkipList::new(Rc::new(DefaultCmp));
+            let mut i = 0;
 
-        //     for (_, _) in LdbIteratorIter::wrap(&mut skm.iter()) {
-        //         i += 1;
-        //     }
+            for (_, _) in DbIteratorWrapper::new(&mut skm.iter()) {
+                i += 1;
+            }
 
-        //     assert_eq!(i, 0);
-        //     assert!(!skm.iter().valid());
-        // }
+            assert_eq!(i, 0);
+            assert!(!skm.iter().valid());
+        }
 
         #[test]
         fn test_skiplist_iterator_init() {
@@ -416,18 +422,18 @@ mod tests {
             assert!(!iter.valid());
         }
 
-        // #[test]
-        // fn test_skiplist_iterator() {
-        //     let skm = make_skiplist();
-        //     let mut i = 0;
+        #[test]
+        fn test_skiplist_iterator() {
+            let skm = make_skiplist();
+            let mut i = 0;
 
-        //     for (k, v) in LdbIteratorIter::wrap(&mut skm.iter()) {
-        //         assert!(!k.is_empty());
-        //         assert!(!v.is_empty());
-        //         i += 1;
-        //     }
-        //     assert_eq!(i, 26);
-        // }
+            for (k, v) in DbIteratorWrapper::new(&mut skm.iter()) {
+                assert!(!k.is_empty());
+                assert!(!v.is_empty());
+                i += 1;
+            }
+            assert_eq!(i, 26);
+        }
 
         #[test]
         fn test_skiplist_iterator_seek_valid() {
@@ -460,15 +466,15 @@ mod tests {
             assert_eq!(iter.current_kv(), None);
         }
 
-        // #[test]
-        // fn test_skiplist_behavior() {
-        //     let mut skm = SkipList::new(Rc::new(DefaultCmp));
-        //     let keys = vec!["aba", "abb", "abc", "abd"];
-        //     for k in keys {
-        //         skm.insert(k.as_bytes().to_vec(), "def".as_bytes().to_vec());
-        //     }
-        //     test_iterator_properties(skm.iter());
-        // }
+        #[test]
+        fn test_skiplist_behavior() {
+            let mut skm = SkipList::new(Rc::new(DefaultCmp));
+            let keys = vec!["aba", "abb", "abc", "abd"];
+            for k in keys {
+                skm.insert(k.as_bytes().to_vec(), "def".as_bytes().to_vec());
+            }
+            test_iterator_properties(skm.iter());
+        }
 
         #[test]
         fn test_skiplist_iterator_prev() {
@@ -487,23 +493,23 @@ mod tests {
             );
         }
 
-        // #[test]
-        // fn test_skiplist_iterator_concurrent_insert() {
-        //     time_test!();
-        //     // Asserts that the list can be mutated while an iterator exists; this is intentional.
-        //     let mut skm = make_skiplist();
-        //     let mut iter = skm.iter();
+        #[test]
+        fn test_skiplist_iterator_concurrent_insert() {
+            // time_test!();
+            // Asserts that the list can be mutated while an iterator exists; this is intentional.
+            let mut skm = make_skiplist();
+            let mut iter = skm.iter();
 
-        //     assert!(iter.advance());
-        //     skm.insert("abccc".as_bytes().to_vec(), "defff".as_bytes().to_vec());
-        //     // Assert that value inserted after obtaining iterator is present.
-        //     for (k, _) in LdbIteratorIter::wrap(&mut iter) {
-        //         if k == "abccc".as_bytes() {
-        //             return;
-        //         }
-        //     }
-        //     panic!("abccc not found in list.");
-        // }
+            assert!(iter.advance());
+            skm.insert("abccc".as_bytes().to_vec(), "defff".as_bytes().to_vec());
+            // Assert that value inserted after obtaining iterator is present.
+            for (k, _) in DbIteratorWrapper::new(&mut iter) {
+                if k == "abccc".as_bytes() {
+                    return;
+                }
+            }
+            panic!("abccc not found in list.");
+        }
     }
 
     mod tests_gpt_4o {
