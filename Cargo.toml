@@ -11,6 +11,7 @@ rand = "0.8.5"
 integer-encoding = "4.0.0"
 crc = "3.2.1"
 snap = "1.1.1"
+fasthash = "0.4.0"
 
 errno = { version = "0.3.9", optional = true }
 fs2 = { version = "0.4.3", optional = true }

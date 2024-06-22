@@ -1,4 +1,5 @@
-use std::{cmp::Ordering, option, rc::Rc};
+//! Data block module
+use std::{cmp::Ordering, rc::Rc};
 
 use crate::coredef::options::Options;
 use crate::coredef::types::DbIterator;
@@ -90,6 +91,7 @@ impl std::fmt::Debug for BlockIter {
 }
 
 impl BlockIter {
+    #[allow(dead_code)]
     fn num_restarts(&self) -> usize {
         self.num_restarts
     }

@@ -1,6 +1,7 @@
 use crate::coredef::types::DbIterator;
 
 pub mod cache;
+pub mod filter;
 mod list;
 pub mod skip_list;
 
