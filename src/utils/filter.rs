@@ -375,6 +375,5 @@ mod tests {
             let policy = BloomFilterPolicy::new(10);
             assert_eq!(policy.name(), "rldb.BloomFilterPolicy");
         }
-
     }
 }
