@@ -1,18 +1,18 @@
 //! An abstraction for key-value storage
 
-mod disk_env;
-mod mem_env;
+pub mod disk_env;
+pub mod mem_env;
 
 use super::error::Result;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
+use std::time::{self, Duration};
 
 #[cfg(unix)]
 use std::os::unix::fs::FileExt;
 #[cfg(windows)]
 use std::os::windows::fs::FileExt;
-use std::time::{self, Duration};
 
 pub trait RandomAccess {
     fn read(&self, offset: usize, dst: &mut [u8]) -> Result<usize>;
@@ -36,21 +36,6 @@ pub struct FileLock {
     pub id: String,
 }
 
-pub struct Logger {
-    dst: Box<dyn Write>,
-}
-
-impl Logger {
-    pub fn new(dst: Box<dyn Write>) -> Self {
-        Self { dst }
-    }
-
-    pub fn log(&mut self, message: &str) {
-        let _ = self.dst.write(message.as_bytes());
-        let _ = self.dst.write(b"\n");
-    }
-}
-
 pub trait Env {
     fn open_sequential_file(&self, p: &Path) -> Result<Box<dyn Read>>;
     fn open_random_access_file(&self, p: &Path) -> Result<Box<dyn RandomAccess>>;
@@ -68,10 +53,6 @@ pub trait Env {
 
     fn lock(&self, p: &Path) -> Result<FileLock>;
     fn unlock(&self, lock: FileLock) -> Result<()>;
-
-    fn new_logger(&self, p: &Path) -> Result<Logger> {
-        self.open_appendable_file(p).map(|dst| Logger::new(dst))
-    }
 
     fn micros(&self) -> u64 {
         time::SystemTime::now()

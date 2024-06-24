@@ -565,7 +565,7 @@ mod tests {
             me.unlock(me.lock(p3).unwrap()).unwrap();
             assert!(me.lock(nonexist).is_ok());
 
-            me.new_logger(p1).unwrap();
+            // me.new_logger(p1).unwrap();
             assert!(me.micros() > 0);
             me.sleep_for(10);
         }

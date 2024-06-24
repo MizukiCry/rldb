@@ -461,24 +461,5 @@ mod tests {
             // Clean up
             env.delete(path).unwrap();
         }
-
-        #[test]
-        fn test_new_logger() {
-            let env = PosixDiskEnv::new();
-            let path = Path::new("test_logger.txt");
-
-            // Create logger
-            let mut logger = env.new_logger(path).unwrap();
-            logger.log("Test log message");
-
-            // Verify log content
-            let mut seq_file = env.open_sequential_file(path).unwrap();
-            let mut buffer = String::new();
-            seq_file.read_to_string(&mut buffer).unwrap();
-            assert_eq!(buffer, "Test log message\n");
-
-            // Clean up
-            env.delete(path).unwrap();
-        }
     }
 }
