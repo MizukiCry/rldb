@@ -86,10 +86,7 @@ impl From<snap::Error> for Status {
 
 impl<T> From<std::sync::PoisonError<T>> for Status {
     fn from(err: std::sync::PoisonError<T>) -> Self {
-        Self::new(
-            StatusCode::LockError,
-            &format!("lock poisoned: [{}]", err.to_string()),
-        )
+        Self::new(StatusCode::LockError, &format!("lock poisoned: [{}]", err))
     }
 }
 

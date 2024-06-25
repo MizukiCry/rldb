@@ -425,7 +425,7 @@ mod tests {
 
         #[test]
         fn test_block_iterator_properties() {
-            let o = Options::default();
+            let o = Options::for_test();
             let mut builder = BlockBuilder::new(o.clone());
             let mut data = get_data();
             data.truncate(4);
@@ -440,7 +440,7 @@ mod tests {
 
         #[test]
         fn test_block_empty() {
-            let mut o = Options::default();
+            let mut o = Options::for_test();
             o.block_restart_interval = 16;
             let builder = BlockBuilder::new(o);
 
@@ -448,7 +448,7 @@ mod tests {
             assert_eq!(blockc.len(), 8);
             assert_eq!(blockc, vec![0, 0, 0, 0, 1, 0, 0, 0]);
 
-            let block = Block::new(blockc, Options::default());
+            let block = Block::new(blockc, Options::for_test());
 
             let mut iter = block.iter();
             assert!(!iter.valid());
@@ -459,14 +459,14 @@ mod tests {
         #[test]
         fn test_block_build_iterate() {
             let data = get_data();
-            let mut builder = BlockBuilder::new(Options::default());
+            let mut builder = BlockBuilder::new(Options::for_test());
 
             for &(k, v) in data.iter() {
                 builder.add(k, v);
             }
 
             let block_contents = builder.build();
-            let mut block = Block::new(block_contents, Options::default()).iter();
+            let mut block = Block::new(block_contents, Options::for_test()).iter();
             let mut i = 0;
 
             assert!(!block.valid());
@@ -481,7 +481,7 @@ mod tests {
 
         #[test]
         fn test_block_iterate_reverse() {
-            let mut o = Options::default();
+            let mut o = Options::for_test();
             o.block_restart_interval = 3;
             let data = get_data();
             let mut builder = BlockBuilder::new(o.clone());
@@ -527,7 +527,7 @@ mod tests {
 
         #[test]
         fn test_block_seek() {
-            let mut o = Options::default();
+            let mut o = Options::for_test();
             o.block_restart_interval = 3;
 
             let data = get_data();
@@ -585,7 +585,7 @@ mod tests {
 
         #[test]
         fn test_block_seek_to_last() {
-            let mut o = Options::default();
+            let mut o = Options::for_test();
 
             // Test with different number of restarts
             for block_restart_interval in vec![2, 6, 10] {
@@ -620,7 +620,7 @@ mod tests {
             use crate::coredef::types::DbIterator;
 
             fn get_sample_options() -> Options {
-                Options::default()
+                Options::for_test()
             }
 
             fn build_sample_block() -> Block {
@@ -780,7 +780,7 @@ mod tests {
 
         #[test]
         fn test_block_builder_sanity() {
-            let mut o = Options::default();
+            let mut o = Options::for_test();
             o.block_restart_interval = 3;
             let mut builder = BlockBuilder::new(o);
             let d = get_data();
@@ -800,7 +800,7 @@ mod tests {
 
         #[test]
         fn test_block_builder_reset() {
-            let mut o = Options::default();
+            let mut o = Options::for_test();
             o.block_restart_interval = 3;
             let mut builder = BlockBuilder::new(o);
             let d = get_data();
@@ -824,7 +824,7 @@ mod tests {
             // Identical key as d[3].
             d[4].0 = b"prefix_key1";
 
-            let mut builder = BlockBuilder::new(Options::default());
+            let mut builder = BlockBuilder::new(Options::for_test());
             for &(k, v) in d.iter() {
                 builder.add(k, v);
                 assert_eq!(k, builder.last_key());
@@ -836,7 +836,7 @@ mod tests {
             use crate::coredef::{options::Options, types::DbIteratorWrapper};
 
             fn get_sample_options() -> Options {
-                Options::default()
+                Options::for_test()
             }
 
             fn get_sample_data() -> Vec<(&'static [u8], &'static [u8])> {

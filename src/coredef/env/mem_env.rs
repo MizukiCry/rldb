@@ -100,6 +100,12 @@ struct MemEnvEntry {
 /// An in-memory environment.
 pub struct MemEnv(Arc<Mutex<HashMap<String, MemEnvEntry>>>);
 
+impl Default for MemEnv {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MemEnv {
     #[allow(dead_code)]
     pub fn new() -> Self {
@@ -180,7 +186,7 @@ impl Env for MemEnv {
         let map = self.0.lock()?;
         for key in map.keys() {
             if key.starts_with(&prefix) {
-                children.push(Path::new(key.strip_prefix(&prefix).unwrap_or(&key)).to_owned());
+                children.push(Path::new(key.strip_prefix(&prefix).unwrap_or(key)).to_owned());
             }
         }
 

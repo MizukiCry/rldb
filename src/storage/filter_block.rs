@@ -131,8 +131,8 @@ impl FilterBlockReader {
             return true;
         }
 
-        let filter_begin = self.filter_offset(block_id as usize);
-        let filter_end = self.filter_offset(block_id as usize + 1);
+        let filter_begin = self.filter_offset(block_id);
+        let filter_end = self.filter_offset(block_id + 1);
 
         self.policy
             .may_exist(key, &self.data[filter_begin..filter_end])

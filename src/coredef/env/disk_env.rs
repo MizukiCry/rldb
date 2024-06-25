@@ -13,6 +13,12 @@ pub struct PosixDiskEnv {
     locks: Arc<Mutex<HashMap<String, File>>>,
 }
 
+impl Default for PosixDiskEnv {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PosixDiskEnv {
     #[allow(dead_code)]
     pub fn new() -> Self {
@@ -62,7 +68,6 @@ impl Env for PosixDiskEnv {
         Ok(Box::new(
             OpenOptions::new()
                 .create(true)
-                .write(true)
                 .append(true)
                 .open(p)
                 .map_err(|e| format_err("open (append)", e, p))?,
@@ -90,19 +95,19 @@ impl Env for PosixDiskEnv {
     }
 
     fn delete(&self, p: &Path) -> Result<()> {
-        Ok(fs::remove_file(p).map_err(|e| format_err("delete", e, p))?)
+        fs::remove_file(p).map_err(|e| format_err("delete", e, p))
     }
 
     fn mkdir(&self, p: &Path) -> Result<()> {
-        Ok(fs::create_dir_all(p).map_err(|e| format_err("mkdir", e, p))?)
+        fs::create_dir_all(p).map_err(|e| format_err("mkdir", e, p))
     }
 
     fn rmdir(&self, p: &Path) -> Result<()> {
-        Ok(fs::remove_dir_all(p).map_err(|e| format_err("rmdir", e, p))?)
+        fs::remove_dir_all(p).map_err(|e| format_err("rmdir", e, p))
     }
 
     fn rename(&self, old: &Path, new: &Path) -> Result<()> {
-        Ok(fs::rename(old, new).map_err(|e| format_err("rename", e, old))?)
+        fs::rename(old, new).map_err(|e| format_err("rename", e, old))
     }
 
     fn lock(&self, p: &Path) -> Result<FileLock> {

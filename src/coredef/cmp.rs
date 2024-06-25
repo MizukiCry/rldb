@@ -35,7 +35,6 @@ impl Cmp for DefaultCmp {
         assert!(a < b);
 
         let mut len = (0..=a.len())
-            .into_iter()
             .find(|&i| i >= a.len() || i >= b.len() || a[i] != b[i])
             .unwrap();
         let mut result = a[..len].to_vec();
@@ -130,8 +129,8 @@ pub struct MemtableKeyCmp(pub Rc<dyn Cmp>);
 
 impl Cmp for MemtableKeyCmp {
     fn cmp(&self, a: &[u8], b: &[u8]) -> Ordering {
-        let (a_len, a_offset) = usize::decode_var(&a).unwrap();
-        let (b_len, b_offset) = usize::decode_var(&b).unwrap();
+        let (a_len, a_offset) = usize::decode_var(a).unwrap();
+        let (b_len, b_offset) = usize::decode_var(b).unwrap();
 
         let a_key = &a[a_offset..a_offset + a_len - 8];
         let b_key = &b[b_offset..b_offset + b_len - 8];

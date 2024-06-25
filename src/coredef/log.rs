@@ -150,7 +150,7 @@ impl<R: Read> LogReader<R> {
             let recordtype = self.scratch[6];
 
             dst.resize(dst_offset + length, 0);
-            self.reader.read(&mut dst[dst_offset..])?;
+            let _ = self.reader.read(&mut dst[dst_offset..])?;
             self.current_block_offset += length;
 
             if self.checksum {

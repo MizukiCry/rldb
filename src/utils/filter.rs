@@ -67,15 +67,11 @@ impl BloomFilterPolicy {
     pub fn new(bits_per_key: u32) -> Self {
         // When k = bits_per_key * ln(2), the miss rate is minimized
         // https://blog.mizuki.fun/posts/ffa9ccf7.html
-        let mut k = (bits_per_key as f32 * std::f32::consts::LN_2) as u32;
-
-        if k < 1 {
-            k = 1;
-        } else if k > 30 {
-            k = 30;
+        let k = (bits_per_key as f32 * std::f32::consts::LN_2) as u32;
+        Self {
+            bits_per_key,
+            k: k.clamp(1, 30),
         }
-
-        Self { bits_per_key, k }
     }
 
     pub fn hash(key: &[u8]) -> u32 {
