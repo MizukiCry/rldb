@@ -1,3 +1,5 @@
+use super::error::{err, Result, StatusCode};
+
 /// A larger sequence number is more recent
 pub type SeqNum = u64;
 pub const MAX_SEQNUM: SeqNum = (1 << 56) - 1;
@@ -103,10 +105,84 @@ impl<'a, It: DbIterator> Iterator for DbIteratorWrapper<'a, It> {
 //     }
 // }
 
-pub type FileNum = u64;
-
-#[derive(Clone)]
-pub struct FileMetaData {}
+pub type FileID = u64;
 
 #[derive(Clone, PartialEq)]
-pub enum FileType {}
+pub struct FileMetaData {
+    pub allowed_seeks: usize,
+    pub id: FileID,
+    pub size: usize,
+    // Internal key format
+    pub smallest: Vec<u8>,
+    pub largest: Vec<u8>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum FileType {
+    Log,
+    DBLock,
+    Table,
+    Descriptor,
+    Current,
+    Temp,
+    InfoLog,
+}
+
+pub fn parse_file_name(name: &str) -> Result<(FileID, FileType)> {
+    if name == "CURRENT" {
+        Ok((0, FileType::Current))
+    } else if name == "LOCK" {
+        Ok((0, FileType::DBLock))
+    } else if name == "LOG" || name == "LOG.old" {
+        Ok((0, FileType::InfoLog))
+    } else if name.starts_with("MANIFEST-") {
+        if let Some(i) = name.find('-') {
+            if let Ok(id) = FileID::from_str_radix(&name[i + 1..], 10) {
+                Ok((id, FileType::Descriptor))
+            } else {
+                err(StatusCode::InvalidArgument, "manifest file has invalid id")
+            }
+        } else {
+            err(StatusCode::InvalidArgument, "manifest file has no dash")
+        }
+    } else if let Some(i) = name.find('.') {
+        if let Ok(id) = FileID::from_str_radix(&name[..i], 10) {
+            let file_type = match &name[i + 1..] {
+                "log" => FileType::Log,
+                "sst" | "ldb" => FileType::Table,
+                "dbtmp" => FileType::Temp,
+                _ => return err(StatusCode::InvalidArgument, "Invalid file type"),
+            };
+            Ok((id, file_type))
+        } else {
+            err(StatusCode::InvalidArgument, "Invalid file id or temp file")
+        }
+    } else {
+        err(StatusCode::InvalidArgument, "Invalid file name")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_types_parse_file_name() {
+        for c in &[
+            ("CURRENT", (0, FileType::Current)),
+            ("LOCK", (0, FileType::DBLock)),
+            ("LOG", (0, FileType::InfoLog)),
+            ("LOG.old", (0, FileType::InfoLog)),
+            ("MANIFEST-01234", (1234, FileType::Descriptor)),
+            ("001122.sst", (1122, FileType::Table)),
+            ("001122.ldb", (1122, FileType::Table)),
+            ("001122.dbtmp", (1122, FileType::Temp)),
+        ] {
+            assert_eq!(parse_file_name(c.0).unwrap(), c.1);
+        }
+        assert!(parse_file_name("xyz.LOCK").is_err());
+        assert!(parse_file_name("01a.sst").is_err());
+        assert!(parse_file_name("0011.abc").is_err());
+        assert!(parse_file_name("MANIFEST-trolol").is_err());
+    }
+}
