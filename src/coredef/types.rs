@@ -1,3 +1,4 @@
+/// A larger sequence number is more recent
 pub type SeqNum = u64;
 pub const MAX_SEQNUM: SeqNum = (1 << 56) - 1;
 pub const NUM_LEVELS: usize = 7;
@@ -101,3 +102,11 @@ impl<'a, It: DbIterator> Iterator for DbIteratorWrapper<'a, It> {
 //         self.as_mut().prev()
 //     }
 // }
+
+pub type FileNum = u64;
+
+#[derive(Clone)]
+pub struct FileMetaData {}
+
+#[derive(Clone, PartialEq)]
+pub enum FileType {}

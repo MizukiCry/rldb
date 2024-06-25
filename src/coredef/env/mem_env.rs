@@ -17,7 +17,7 @@ impl RandomAccess for VecFile {
             return Ok(0);
         }
         let len = dst.len().min(self.len() - offset);
-        (&mut dst[..len]).copy_from_slice(&self[offset..offset + len]);
+        dst[..len].copy_from_slice(&self[offset..offset + len]);
         Ok(len)
     }
 }
@@ -55,7 +55,7 @@ impl Read for MemFileReader {
         }
 
         let len = buf.len().min(src.len() - self.1);
-        (&mut buf[..len]).copy_from_slice(&src[self.1..self.1 + len]);
+        buf[..len].copy_from_slice(&src[self.1..self.1 + len]);
         self.1 += len;
         Ok(len)
     }
@@ -80,7 +80,7 @@ impl Write for MemFileWriter {
         let mut dst = self.0 .0.lock().unwrap();
         let copy_len = std::cmp::min(dst.len() - self.1, buf.len());
 
-        (&mut dst[self.1..self.1 + copy_len]).copy_from_slice(&buf[..copy_len]);
+        dst[self.1..self.1 + copy_len].copy_from_slice(&buf[..copy_len]);
         dst.extend_from_slice(&buf[copy_len..]);
 
         self.1 += buf.len();
