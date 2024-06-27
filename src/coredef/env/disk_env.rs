@@ -57,6 +57,7 @@ impl Env for PosixDiskEnv {
         Ok(Box::new(
             OpenOptions::new()
                 .create(true)
+                .truncate(false)
                 .write(true)
                 .append(false)
                 .open(p)
@@ -121,6 +122,7 @@ impl Env for PosixDiskEnv {
         let f = OpenOptions::new()
             .write(true)
             .create(true)
+            .truncate(true)
             .open(p)
             .map_err(|e| format_err("lock", e, p))?;
 

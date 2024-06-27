@@ -40,13 +40,22 @@ impl CompressorList {
         self.0[id as usize].is_some()
     }
 
-    pub fn get(&self, id: u8) -> Result<&Box<dyn Compressor + 'static>> {
-        self.0[id as usize].as_ref().ok_or_else(|| {
-            Status::new(
-                StatusCode::NotSupported,
-                &format!("Compressor with id {} not found", id),
-            )
-        })
+    pub fn get(&self, id: u8) -> Result<&(dyn Compressor + 'static)> {
+        // self.0[id as usize].as_ref().ok_or_else(|| {
+        //     Status::new(
+        //         StatusCode::NotSupported,
+        //         &format!("Compressor with id {} not found", id),
+        //     )
+        // })
+        self.0[id as usize]
+            .as_ref()
+            .map(|c| c.as_ref())
+            .ok_or_else(|| {
+                Status::new(
+                    StatusCode::NotSupported,
+                    &format!("Compressor with id {} not found", id),
+                )
+            })
     }
 }
 

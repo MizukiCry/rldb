@@ -88,6 +88,7 @@ impl InnerSkipList {
             skips: vec![None; new_height],
         });
 
+        #[allow(clippy::needless_range_loop)]
         for i in 0..new_height {
             unsafe {
                 new_node.skips[i] = (*prevs[i]).skips[i];
@@ -283,7 +284,7 @@ mod tests {
 
         use super::*;
 
-        pub fn make_skiplist() -> SkipList {
+        fn make_skiplist() -> SkipList {
             let mut skm = SkipList::new(Rc::new(DefaultCmp));
             let keys = vec![
                 "aba", "abb", "abc", "abd", "abe", "abf", "abg", "abh", "abi", "abj", "abk", "abl",
