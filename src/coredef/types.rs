@@ -500,7 +500,7 @@ mod tests {
                 let second = miter.next();
                 // -> abc
                 let third = miter.next();
-                eprintln!("{:?} {:?} {:?}", first, second, third);
+                // eprintln!("{:?} {:?} {:?}", first, second, third);
 
                 assert!(first != third);
                 // abb <-

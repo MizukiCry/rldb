@@ -92,7 +92,7 @@ pub struct Options {
     pub reuse_logs: bool,
     pub reuse_manifest: bool,
 
-    pub filter_policy: Rc<Box<dyn FilterPolicy>>,
+    pub filter_policy: Rc<dyn FilterPolicy>,
 }
 
 impl Default for Options {
@@ -116,7 +116,7 @@ impl Default for Options {
             reuse_manifest: true,
             compressor: 0,
             compressor_list: Rc::new(CompressorList::default()),
-            filter_policy: Rc::new(Box::new(BloomFilterPolicy::new(DEFAULT_BITS_PER_KEY))),
+            filter_policy: Rc::new(BloomFilterPolicy::new(DEFAULT_BITS_PER_KEY)),
         }
 
         // todo!()

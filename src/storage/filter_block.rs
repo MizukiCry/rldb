@@ -89,6 +89,7 @@ impl FilterBlockBuilder {
     }
 }
 
+#[derive(Clone)]
 pub struct FilterBlockReader {
     policy: Rc<dyn FilterPolicy>,
     data: Rc<Vec<u8>>,

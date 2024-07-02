@@ -5,14 +5,13 @@
 //! Checksum: crc32 sum of type and data
 //! Type: Full, First, Middle, Last. Used when a record is split into multiple blocks.
 use super::error::{err, Result, StatusCode};
-use crc::Crc;
+use crate::utils::{mask_crc, unmask_crc, CRC};
 use integer_encoding::{FixedInt, FixedIntWriter};
 use std::io::{self, Read, Write};
 
 const BLOCK_SIZE: usize = 32 * 1024; // 32 KiB
 const HEADER_SIZE: usize = 4 + 2 + 1; // checksum (u32), length (u16), type (u8)
 const PADDING: [u8; HEADER_SIZE] = [0; HEADER_SIZE];
-const CRC: Crc<u32> = Crc::<u32>::new(&crc::CRC_32_CKSUM);
 
 pub struct Logger(pub Box<dyn Write>);
 
@@ -171,17 +170,6 @@ impl<R: Read> LogReader<R> {
     }
 }
 
-const MASK_DELTA: u32 = 0xa282ead8;
-
-pub fn mask_crc(c: u32) -> u32 {
-    (c.wrapping_shr(15) | c.wrapping_shl(17)).wrapping_add(MASK_DELTA)
-}
-
-pub fn unmask_crc(c: u32) -> u32 {
-    let c = c.wrapping_sub(MASK_DELTA);
-    c.wrapping_shr(17) | c.wrapping_shl(15)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -198,7 +186,7 @@ mod tests {
 
         #[test]
         fn test_crc_sanity() {
-            assert_eq!(0xFFFFFFFF, CRC.checksum(&[0 as u8; 32]));
+            assert_eq!(0xFFFFFFFF, CRC.checksum(&[0u8; 32]));
             assert_eq!(0x9A809998, CRC.checksum(&[0xff as u8; 32]));
         }
 
@@ -228,7 +216,7 @@ mod tests {
             ];
 
             let mut dst = Vec::new();
-            dst.resize(1024, 0 as u8);
+            dst.resize(1024, 0u8);
 
             {
                 let mut lw = LogWriter::new(std::io::Cursor::new(dst.as_mut_slice()));

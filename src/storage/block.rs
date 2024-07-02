@@ -326,7 +326,7 @@ impl BlockBuilder {
     }
 
     /// Number of key-value pairs in the block
-    pub fn entries(&self) -> usize {
+    pub fn num_entries(&self) -> usize {
         self.size
     }
 
@@ -792,7 +792,7 @@ mod tests {
             }
 
             assert_eq!(149, builder.estimate_size());
-            assert_eq!(d.len(), builder.entries());
+            assert_eq!(d.len(), builder.num_entries());
 
             let block = builder.build();
             assert_eq!(block.len(), 149);
@@ -811,9 +811,9 @@ mod tests {
                 assert_eq!(builder.last_key(), k);
             }
 
-            assert_eq!(d.len(), builder.entries());
+            assert_eq!(d.len(), builder.num_entries());
             builder.reset();
-            assert_eq!(0, builder.entries());
+            assert_eq!(0, builder.num_entries());
             assert_eq!(4, builder.estimate_size());
         }
 
@@ -870,7 +870,7 @@ mod tests {
                     builder.add(key, value);
                 }
 
-                assert_eq!(builder.entries(), data.len());
+                assert_eq!(builder.num_entries(), data.len());
                 assert_eq!(builder.last_key(), b"key3");
             }
 
@@ -884,7 +884,7 @@ mod tests {
                     builder.add(key, value);
                 }
 
-                assert_eq!(builder.entries(), data.len());
+                assert_eq!(builder.num_entries(), data.len());
             }
 
             #[test]
@@ -1021,7 +1021,7 @@ mod tests {
         #[test]
         fn test_blockhandle() {
             let bh = BlockHandle::new(890, 777);
-            let mut dst = [0 as u8; 128];
+            let mut dst = [0u8; 128];
             let enc_sz = bh.encode(&mut dst[..]);
 
             let (bh2, dec_sz) = BlockHandle::decode(&dst).unwrap();
