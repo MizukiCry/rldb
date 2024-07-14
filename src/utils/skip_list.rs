@@ -537,6 +537,11 @@ mod tests {
             fn name(&self) -> &'static str {
                 unimplemented!()
             }
+
+            #[cfg(test)]
+            fn to_string(&self) -> String {
+                unimplemented!()
+            }
         }
 
         fn new_skiplist() -> SkipList {

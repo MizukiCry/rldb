@@ -24,3 +24,4 @@ fs = ["errno", "fs2"]
 async = ["tokio"]
 
 [dev-dependencies]
+time-test = "0.2.3"

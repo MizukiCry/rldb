@@ -6,3 +6,5 @@ pub mod key;
 pub mod log;
 pub mod options;
 pub mod types;
+
+pub const NUM_LEVELS: usize = 7;

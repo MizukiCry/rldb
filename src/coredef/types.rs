@@ -8,7 +8,6 @@ use super::{
 /// A larger sequence number is more recent
 pub type SeqNum = u64;
 pub const MAX_SEQNUM: SeqNum = (1 << 56) - 1;
-pub const NUM_LEVELS: usize = 7;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum Direction {
@@ -246,7 +245,7 @@ impl DbIterator for MergingIterator {
 
 pub type FileID = u64;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct FileMetaData {
     pub allowed_seeks: usize,
     pub id: FileID,

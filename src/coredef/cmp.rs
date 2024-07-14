@@ -17,6 +17,9 @@ pub trait Cmp {
     fn find_shortest_successor(&self, a: &[u8]) -> Vec<u8>;
 
     fn name(&self) -> &'static str;
+
+    #[cfg(test)]
+    fn to_string(&self) -> String;
 }
 
 /// Default bytewise comparator
@@ -78,6 +81,11 @@ impl Cmp for DefaultCmp {
     fn name(&self) -> &'static str {
         "rldb.DefaultCmp"
     }
+
+    #[cfg(test)]
+    fn to_string(&self) -> String {
+        "DefaultCmp".to_string()
+    }
 }
 
 #[derive(Clone)]
@@ -122,6 +130,11 @@ impl Cmp for InternalKeyCmp {
     fn name(&self) -> &'static str {
         self.0.name()
     }
+
+    #[cfg(test)]
+    fn to_string(&self) -> String {
+        format!("InternalKeyCmp({})", self.0.to_string())
+    }
 }
 
 #[derive(Clone)]
@@ -158,6 +171,11 @@ impl Cmp for MemtableKeyCmp {
 
     fn name(&self) -> &'static str {
         self.0.name()
+    }
+
+    #[cfg(test)]
+    fn to_string(&self) -> String {
+        format!("MemtableKeyCmp({})", self.0.to_string())
     }
 }
 
