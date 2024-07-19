@@ -83,31 +83,31 @@ impl<'a, It: DbIterator> Iterator for DbIteratorWrapper<'a, It> {
     }
 }
 
-// impl DbIterator for Box<dyn DbIterator> {
-//     fn advance(&mut self) -> bool {
-//         self.as_mut().advance()
-//     }
+impl DbIterator for Box<dyn DbIterator> {
+    fn advance(&mut self) -> bool {
+        self.as_mut().advance()
+    }
 
-//     fn current(&self, key: &mut Vec<u8>, value: &mut Vec<u8>) -> bool {
-//         self.as_ref().current(key, value)
-//     }
+    fn current(&self, key: &mut Vec<u8>, value: &mut Vec<u8>) -> bool {
+        self.as_ref().current(key, value)
+    }
 
-//     fn seek(&mut self, key: &[u8]) {
-//         self.as_mut().seek(key)
-//     }
+    fn seek(&mut self, key: &[u8]) {
+        self.as_mut().seek(key)
+    }
 
-//     fn reset(&mut self) {
-//         self.as_mut().reset()
-//     }
+    fn reset(&mut self) {
+        self.as_mut().reset()
+    }
 
-//     fn valid(&self) -> bool {
-//         self.as_ref().valid()
-//     }
+    fn valid(&self) -> bool {
+        self.as_ref().valid()
+    }
 
-//     fn prev(&mut self) -> bool {
-//         self.as_mut().prev()
-//     }
-// }
+    fn prev(&mut self) -> bool {
+        self.as_mut().prev()
+    }
+}
 
 pub struct MergingIterator {
     iters: Vec<Box<dyn DbIterator>>,
@@ -245,7 +245,7 @@ impl DbIterator for MergingIterator {
 
 pub type FileID = u64;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct FileMetaData {
     pub allowed_seeks: usize,
     pub id: FileID,

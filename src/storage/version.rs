@@ -263,25 +263,24 @@ impl Version {
         Ok(iters)
     }
 
-    // #[cfg(test)]
-    // pub fn summary(&self) -> String {
-    //     let mut res = String::with_capacity(256);
-    //     for (level, files) in self.files.iter().enumerate() {
-    //         if files.is_empty() {
-    //             continue;
-    //         }
-    //         res.push_str(&format!(
-    //             "level {level}: {} files, {} bytes ({:?}); ",
-    //             files.len(),
-    //             files.iter().map(|f| f.borrow().size).sum::<usize>(),
-    //             files
-    //                 .iter()
-    //                 .map(|f| (f.borrow().id, f.borrow().size))
-    //                 .collect::<Vec<_>>()
-    //         ));
-    //     }
-    //     res
-    // }
+    pub fn summary(&self) -> String {
+        let mut res = String::with_capacity(256);
+        for (level, files) in self.files.iter().enumerate() {
+            if files.is_empty() {
+                continue;
+            }
+            res.push_str(&format!(
+                "level {level}: {} files, {} bytes ({:?}); ",
+                files.len(),
+                files.iter().map(|f| f.borrow().size).sum::<usize>(),
+                files
+                    .iter()
+                    .map(|f| (f.borrow().id, f.borrow().size))
+                    .collect::<Vec<_>>()
+            ));
+        }
+        res
+    }
 
     // #[cfg(test)]
     // fn max_next_level_overlapping_bytes(&self) -> usize {
