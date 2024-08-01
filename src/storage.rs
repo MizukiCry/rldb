@@ -1,4 +1,6 @@
 pub mod block;
+pub mod database;
+pub mod database_iter;
 pub mod filter_block;
 pub mod memtable;
 pub mod snapshot;
