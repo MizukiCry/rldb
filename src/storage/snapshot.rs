@@ -84,6 +84,7 @@ impl SnapshotList {
     }
 
     /// Returns the largest sequence number
+    #[allow(dead_code)]
     pub fn newest(&self) -> (SnapshotID, SeqNum) {
         self.inner
             .borrow()

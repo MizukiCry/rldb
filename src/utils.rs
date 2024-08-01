@@ -1,4 +1,3 @@
-use crate::coredef::types::DbIterator;
 use crc::Crc;
 
 pub mod cache;
@@ -6,7 +5,8 @@ pub mod filter;
 mod list;
 pub mod skip_list;
 
-pub fn test_iterator_properties(mut iter: impl DbIterator) {
+#[cfg(test)]
+pub fn test_iterator_properties(mut iter: impl crate::coredef::types::DbIterator) {
     assert!(!iter.valid());
     assert!(iter.advance());
     assert!(iter.valid());

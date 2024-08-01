@@ -338,6 +338,7 @@ impl BlockBuilder {
         self.buffer.len() + 4 * self.restarts.len() + 4
     }
 
+    #[allow(dead_code)]
     pub fn reset(&mut self) {
         self.buffer.clear();
         self.restarts.clear();

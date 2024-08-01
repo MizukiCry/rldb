@@ -70,6 +70,7 @@ pub struct DbIteratorWrapper<'a, It: 'a> {
 }
 
 impl<'a, It: DbIterator> DbIteratorWrapper<'a, It> {
+    #[allow(dead_code)]
     pub fn new(inner: &'a mut It) -> Self {
         Self { inner }
     }

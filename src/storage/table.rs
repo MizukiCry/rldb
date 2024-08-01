@@ -40,6 +40,7 @@ pub struct Footer {
 impl Footer {
     pub const FOOTER_SIZE: usize = 40;
     pub const FOOTER_FULL_SIZE: usize = 48;
+    #[allow(dead_code)]
     pub const MAGIC_NUMBER: u64 = 0xdb4775248b80fb57;
     pub const MAGIC_NUMBER_BYTES: [u8; 8] = [0x57, 0xfb, 0x80, 0x8b, 0x24, 0x75, 0x47, 0xdb];
 
